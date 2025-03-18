@@ -15,49 +15,49 @@
 
 ### 1. Simple Permission Request
 ```java
-        PermissionRequest.with(MainActivity.this)
-                .addPermissions(Manifest.permission.READ_SMS)
-                .onResult((success, grantPerms, denyPerms, denyForeverPerms) -> {
-                    String msg = success ? "SMS permission granted" : "SMS permission denied";
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                })
-                .request();
+PermissionRequest.with(MainActivity.this)
+    .addPermissions(Manifest.permission.READ_SMS)
+    .onResult((success, grantPerms, denyPerms, denyForeverPerms) -> {
+        String msg = success ? "SMS permission granted" : "SMS permission denied";
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+    })
+    .request();
 ```
 
 ### 2. Permission Request with Rationale UI
 If a permission requires an explanation before requesting, you can use `PermissionRationale`.
 
 ```java
-        PermissionRequest.with(MainActivity.this)
-                .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
-                .onResult(new PermissionRationale() {
-                    @Override
-                    public void showRationaleUI(@NonNull Context context, @NonNull PermissionRationaleHandler callback) {
-                        // Show a rationale dialog to explain why this permission is needed
-                        new AlertDialog.Builder(context)
-                            .setMessage("This permission is required to provide location services.")
-                            .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    callback.onDenied();
-                                }
-                            })
-                            .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    callback.onAccepted();
-                                }
-                            })
-                        .show();
-                    }
+PermissionRequest.with(MainActivity.this)
+    .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+    .onResult(new PermissionRationale() {
+        @Override
+        public void showRationaleUI(@NonNull Context context, @NonNull PermissionRationaleHandler callback) {
+            // Show a rationale dialog to explain why this permission is needed
+            new AlertDialog.Builder(context)
+                    .setMessage("This permission is required to provide location services.")
+                    .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            callback.onDenied();
+                        }
+                    })
+                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            callback.onAccepted();
+                        }
+                    })
+                    .show();
+        }
 
-                    @Override
-                    public void onResult(boolean success, @NonNull List<String> grantPerms, @NonNull List<String> denyPerms, @NonNull List<String> denyForeverPerms) {
-                        String msg = success ? "Location permission granted" : "Location permission denied";
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .request();
+        @Override
+        public void onResult(boolean success, @NonNull List<String> grantPerms, @NonNull List<String> denyPerms, @NonNull List<String> denyForeverPerms) {
+            String msg = success ? "Location permission granted" : "Location permission denied";
+            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+        }
+    })
+    .request();
 ```
 
 ## Download

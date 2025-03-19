@@ -14,7 +14,7 @@
 ### 申请权限
 
 ```java
-PermissionRequest.with(context)
+PermissionRequest.with(activity)
         .addPermissions(Manifest.permission.CAMERA)
         .onResult((success, granted, denied, deniedForever) -> {
             if (success) {
@@ -31,7 +31,7 @@ PermissionRequest.with(context)
 如果需要在请求权限前向用户解释权限用途，可以使用 `PermissionRationale`：
 
 ```java
-PermissionRequest.with(context)
+PermissionRequest.with(fragment)
         .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
         .onResult(new PermissionRationale() {
             @Override

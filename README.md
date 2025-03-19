@@ -15,7 +15,7 @@
 
 ### 1. Simple Permission Request
 ```java
-PermissionRequest.with(context)
+PermissionRequest.with(activity)
     .addPermissions(Manifest.permission.READ_SMS)
     .onResult((success, grantPerms, denyPerms, denyForeverPerms) -> {
         String msg = success ? "SMS permission granted" : "SMS permission denied";
@@ -28,7 +28,7 @@ PermissionRequest.with(context)
 If a permission requires an explanation before requesting, you can use `PermissionRationale`.
 
 ```java
-PermissionRequest.with(context)
+PermissionRequest.with(fragment)
     .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
     .onResult(new PermissionRationale() {
         @Override

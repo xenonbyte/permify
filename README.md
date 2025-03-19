@@ -15,11 +15,11 @@
 
 ### 1. Simple Permission Request
 ```java
-PermissionRequest.with(MainActivity.this)
+PermissionRequest.with(context)
     .addPermissions(Manifest.permission.READ_SMS)
     .onResult((success, grantPerms, denyPerms, denyForeverPerms) -> {
         String msg = success ? "SMS permission granted" : "SMS permission denied";
-        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     })
     .request();
 ```
@@ -28,7 +28,7 @@ PermissionRequest.with(MainActivity.this)
 If a permission requires an explanation before requesting, you can use `PermissionRationale`.
 
 ```java
-PermissionRequest.with(MainActivity.this)
+PermissionRequest.with(context)
     .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
     .onResult(new PermissionRationale() {
         @Override
@@ -54,7 +54,7 @@ PermissionRequest.with(MainActivity.this)
         @Override
         public void onResult(boolean success, @NonNull List<String> grantPerms, @NonNull List<String> denyPerms, @NonNull List<String> denyForeverPerms) {
             String msg = success ? "Location permission granted" : "Location permission denied";
-            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         }
     })
     .request();

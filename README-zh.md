@@ -14,13 +14,13 @@
 ### 申请权限
 
 ```java
-PermissionRequest.with(this)
+PermissionRequest.with(context)
         .addPermissions(Manifest.permission.CAMERA)
         .onResult((success, granted, denied, deniedForever) -> {
             if (success) {
-                Toast.makeText(this, "相机权限授予成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "相机权限授予成功", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "相机权限请求失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "相机权限请求失败", Toast.LENGTH_SHORT).show();
             }
         })
         .request();
@@ -31,7 +31,7 @@ PermissionRequest.with(this)
 如果需要在请求权限前向用户解释权限用途，可以使用 `PermissionRationale`：
 
 ```java
-PermissionRequest.with(this)
+PermissionRequest.with(context)
         .addPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
         .onResult(new PermissionRationale() {
             @Override

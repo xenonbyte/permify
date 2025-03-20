@@ -17,12 +17,21 @@ import java.util.Map;
 public interface PermissionFragmentHost extends LifecycleOwner {
 
     /**
-     * 请求权限
+     * 请求特殊权限
+     *
+     * @param requestCode    权限code
+     * @param perms          权限集
+     * @param resultCallback 结果回调
+     */
+    void requestSpecialPermissions(int requestCode, @NonNull String[] perms, ActivityResultCallback<Map<String, Boolean>> resultCallback);
+
+    /**
+     * 请求运行时权限
      *
      * @param requestCode    权限code
      * @param perms          权限集
      * @param resultCallback 结果回调
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    void requestPermissions(int requestCode, @NonNull String[] perms, ActivityResultCallback<Map<String, Boolean>> resultCallback);
+    void requestRuntimePermissions(int requestCode, @NonNull String[] perms, ActivityResultCallback<Map<String, Boolean>> resultCallback);
 }

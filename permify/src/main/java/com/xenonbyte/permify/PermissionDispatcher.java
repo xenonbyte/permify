@@ -1,10 +1,9 @@
 package com.xenonbyte.permify;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.activity.result.ActivityResultCallback;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -30,8 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class PermissionDispatcher {
     private final BasePermissionHandler mPermissionHandler;
     private final AtomicInteger mRequestCode = new AtomicInteger(0);
-    private final PermissionResultStore<PermissionResult> mResultStore = new PermissionResultStore<>();
-    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private final PermissionDataStore<PermissionResult> mCallbackStore = new PermissionDataStore<>();
 
     PermissionDispatcher(Activity activity) {
         if (activity instanceof FragmentActivity) {
@@ -53,7 +51,7 @@ class PermissionDispatcher {
             public void onStateChanged(@NonNull LifecycleOwner lifecycleOwner, @NonNull Lifecycle.Event event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     lifecycleOwner.getLifecycle().removeObserver(this);
-                    mResultStore.clear();
+                    mCallbackStore.clear();
                 }
             }
         });
@@ -62,33 +60,35 @@ class PermissionDispatcher {
     /**
      * 请求权限列表
      *
-     * @param callback 结果回调
-     * @param perms    权限列表
+     * @param perms        权限列表
+     * @param specialPerms 特殊权限列表
+     * @param callback     结果回调
      */
-    void requestPermissions(@NonNull String[] perms, PermissionResult callback) {
-        requestPermissions(perms, false, callback);
+    @MainThread
+    void requestPermissions(@NonNull String[] perms, @NonNull String[] specialPerms, PermissionResult callback) {
+        requestPermissions(perms, specialPerms, false, callback);
     }
 
     /**
      * 请求权限列表
      *
-     * @param callback      结果回调
-     * @param skipRationale 跳过权限询问
      * @param perms         权限列表
+     * @param specialPerms  特殊权限列表
+     * @param skipRationale 跳过权限询问检测
+     * @param callback      结果回调
      */
-    private void requestPermissions(@NonNull String[] perms, boolean skipRationale, PermissionResult callback) {
-        if (Looper.getMainLooper() != Looper.myLooper()) {
-            mMainHandler.post(() -> requestPermissions(perms, skipRationale, callback));
-            return;
-        }
+    @MainThread
+    private void requestPermissions(@NonNull String[] perms, @NonNull String[] specialPerms, boolean skipRationale, PermissionResult callback) {
         if (isDestroyed()) {
             return;
         }
+        int requestCode = mRequestCode.incrementAndGet();
+        mCallbackStore.save(requestCode, callback);
         if (!skipRationale && callback instanceof PermissionRationale && shouldShowRationale(perms)) {
             ((PermissionRationale) callback).showRationaleUI(mPermissionHandler.getContext(), new PermissionRationaleHandler() {
                 @Override
                 public void onAccepted() {
-                    requestPermissions(perms, true, callback);
+                    requestPermissions(perms, specialPerms, true, mCallbackStore.getAndRemove(requestCode));
                 }
 
                 @Override
@@ -98,9 +98,7 @@ class PermissionDispatcher {
             });
             return;
         }
-        int requestCode = mRequestCode.incrementAndGet();
-        mResultStore.save(requestCode, callback);
-        mPermissionHandler.directRequestPermissions(requestCode, perms, (ActivityResultCallback<Map<String, Boolean>>) resultMap -> {
+        mPermissionHandler.directRequestPermissions(requestCode, perms, specialPerms, (ActivityResultCallback<Map<String, Boolean>>) resultMap -> {
             if (isDestroyed()) {
                 return;
             }
@@ -122,9 +120,19 @@ class PermissionDispatcher {
                     success = false;
                 }
             }
-            PermissionResult callback1 = mResultStore.getAndRemove(requestCode);
-            if (callback1 != null) {
-                callback1.onResult(success, grantPerms, denyPerms, denyForeverPerms);
+            for (int i = 0; i < specialPerms.length; i++) {
+                String perm = specialPerms[i];
+                Boolean grant = resultMap.get(perm);
+                if (grant != null && grant) {
+                    grantPerms.add(perm);
+                } else {
+                    denyPerms.add(perm);
+                    success = false;
+                }
+            }
+            PermissionResult resultCallback = mCallbackStore.getAndRemove(requestCode);
+            if (resultCallback != null) {
+                resultCallback.onResult(success, grantPerms, denyPerms, denyForeverPerms);
             }
         });
     }

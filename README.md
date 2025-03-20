@@ -3,13 +3,22 @@
 [中文说明](README-zh.md)
 
 ## Overview
-`permify` is an Android permission request library that simplifies runtime permission handling with a clean and intuitive API. It provides an easy way to request permissions and handle different permission scenarios, including rationale UI and permanently denied permissions.
+`permify` is an Android permission request library that simplifies runtime and special permission handling with a clean and intuitive API. It provides an easy way to request both runtime and special permissions.
 
 ## Features
-- Simple API for requesting permissions
+- Simple API for requesting both **runtime and special permissions**
 - Supports both `Activity` and `Fragment`
 - Callback for permission results
 - Custom rationale UI support
+- Supports special permissions:  
+
+  - `SYSTEM_ALERT_WINDOW`  
+
+  - `WRITE_SETTINGS`  
+
+  - `MANAGE_EXTERNAL_STORAGE`  
+
+  - `REQUEST_INSTALL_PACKAGES`  
 
 ## Usage
 
@@ -67,7 +76,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.xenonbyte:permify:1.0.0'
+    implementation 'com.github.xenonbyte:permify:1.0.1'
 }
 ```
 

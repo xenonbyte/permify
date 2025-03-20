@@ -25,4 +25,9 @@ public interface PermissionContext<T> extends LifecycleOwner {
      * @return 权限Host
      */
     T getHost();
+
+    /**
+     * 上下文销毁
+     */
+    void onDestroyed();
 }

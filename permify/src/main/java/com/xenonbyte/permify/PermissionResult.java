@@ -15,8 +15,8 @@ public interface PermissionResult {
      * 结果回调
      *
      * @param success          是否成功（申请权限列表都被允许）
-     * @param grantPerms       允许的权限列表
-     * @param denyPerms        拒绝的权限列表
+     * @param grantPerms       允许的权限列表（包括运行时权限和特殊权限）
+     * @param denyPerms        拒绝的权限列表（包括运行时权限和特殊权限）
      * @param denyForeverPerms 永久拒绝的权限列表
      */
     void onResult(boolean success, @NonNull List<String> grantPerms, @NonNull List<String> denyPerms, @NonNull List<String> denyForeverPerms);

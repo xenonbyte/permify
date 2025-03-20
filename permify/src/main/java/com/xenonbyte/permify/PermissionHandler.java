@@ -17,9 +17,10 @@ public interface PermissionHandler {
      *
      * @param requestCode    权限请求code
      * @param perms          权限集
+     * @param specialPerms   特殊权限集
      * @param resultCallback 权限结果回调
      */
-    void directRequestPermissions(int requestCode, @NonNull String[] perms, ActivityResultCallback<Map<String, Boolean>> resultCallback);
+    void directRequestPermissions(int requestCode, @NonNull String[] perms, @NonNull String[] specialPerms, ActivityResultCallback<Map<String, Boolean>> resultCallback);
 
     /**
      * 请求权限是否需要显示权限理由

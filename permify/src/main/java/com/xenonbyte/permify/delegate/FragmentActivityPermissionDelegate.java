@@ -27,7 +27,7 @@ public class FragmentActivityPermissionDelegate extends BasePermissionDelegate<F
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public boolean shouldShowRequestPermissionRationale23(@NonNull String perm) {
+    public boolean shouldShowRequestRuntimePermissionRationale23(@NonNull String perm) {
         return getHost().shouldShowRequestPermissionRationale(perm);
     }
 

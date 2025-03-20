@@ -2,18 +2,24 @@ package com.xenonbyte.permify;
 
 import android.util.ArrayMap;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 
 /**
- * 权限结果存储
+ * 权限数据存储
  *
  * @author xubo
  */
-public class PermissionResultStore<ResultCallback> {
-    private final Map<Integer, ResultCallback> mResultMap = new ArrayMap<>();
+public class PermissionDataStore<Result> {
+    private final Map<Integer, Result> mResultMap = new ArrayMap<>();
     private final Object mLock = new Object();
 
-    public void save(int requestCode, ResultCallback callback) {
+    public @NonNull Object getLock() {
+        return mLock;
+    }
+
+    public void save(int requestCode, Result callback) {
         if (callback == null) {
             return;
         }
@@ -22,7 +28,7 @@ public class PermissionResultStore<ResultCallback> {
         }
     }
 
-    public ResultCallback getAndRemove(int requestCode) {
+    public Result getAndRemove(int requestCode) {
         synchronized (mLock) {
             return mResultMap.remove(requestCode);
         }

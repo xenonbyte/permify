@@ -1,6 +1,6 @@
 # permify
 
-`permify` 是一个 Android 权限请求库，提供简单、灵活的 API 以处理运行时权限请求
+`permify` 是一个 Android 权限请求库，提供简单、灵活的 API 以处理运行时权限和特殊权限请求
 
 ## 特性
 
@@ -8,6 +8,15 @@
 - **自动权限管理**：处理权限请求及结果
 - **支持权限说明 UI**：可在权限请求前弹出自定义提示对话框
 - **兼容性强**：支持 `Activity` and `Fragment`
+- **支持的外部权限**:  
+
+  - `SYSTEM_ALERT_WINDOW`  
+
+  - `WRITE_SETTINGS`  
+
+  - `MANAGE_EXTERNAL_STORAGE`  
+
+  - `REQUEST_INSTALL_PACKAGES`  
 
 ## 快速开始
 
@@ -61,7 +70,7 @@ PermissionRequest.with(fragment)
 
 ```gradle
 dependencies {
-    implementation 'com.github.xenonbyte:permify:1.0.0'
+    implementation 'com.github.xenonbyte:permify:1.0.1'
 }
 ```
 

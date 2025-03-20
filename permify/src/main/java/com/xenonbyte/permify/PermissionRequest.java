@@ -1,8 +1,12 @@
 package com.xenonbyte.permify;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.fragment.app.Fragment;
+
+import com.xenonbyte.permify.delegate.SpecialPermissionsUtils;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,7 +19,9 @@ import java.util.Set;
 public class PermissionRequest {
     private final PermissionDispatcher mDispatcher;
     private final Set<String> mPermissions = new LinkedHashSet<>();
+    private final Set<String> mSpecialPermissions = new LinkedHashSet<>();
     private PermissionResult mResult;
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     private PermissionRequest(Activity activity) {
         mDispatcher = new PermissionDispatcher(activity);
@@ -53,7 +59,11 @@ public class PermissionRequest {
      */
     public PermissionRequest addPermissions(String... permissions) {
         for (String permission : permissions) {
-            mPermissions.add(permission);
+            if (SpecialPermissionsUtils.isSpecialPermission(permission)) {
+                mSpecialPermissions.add(permission);
+            } else {
+                mPermissions.add(permission);
+            }
         }
         return this;
     }
@@ -74,6 +84,11 @@ public class PermissionRequest {
      */
     public void request() {
         String[] perms = mPermissions.toArray(new String[mPermissions.size()]);
-        mDispatcher.requestPermissions(perms, mResult);
+        String[] specialPerms = mSpecialPermissions.toArray(new String[mSpecialPermissions.size()]);
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            mMainHandler.post(() -> mDispatcher.requestPermissions(perms, specialPerms, mResult));
+        } else {
+            mDispatcher.requestPermissions(perms, specialPerms, mResult);
+        }
     }
 }
